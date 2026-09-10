@@ -1,10 +1,49 @@
 export const BRAND = "Repo Shield";
 export const TAGLINE = "Protect all your GitHub repos from AI scraping — in one click.";
+export const AUDIENCE = "For open-source maintainers with many public repos";
 export const SUB = [
-  "Your public code is ingested by AI training pipelines without consent or credit.",
-  "Repo Shield adds the license + AI-training notices that stake your claim, then",
-  "monitors every repo every week so gaps get fixed before they bite.",
+  "Every year you pour into public repos — and those repos are bulk-ingested for AI training",
+  "without consent or credit. Repo Shield stakes your claim: the license and AI-training",
+  "notices that say who can and can't use your code, applied across every repo you own,",
+  "then monitored weekly so gaps surface before they bite.",
 ].join(" ");
+
+export const PAIN_POINTS: Array<{ title: string; body: string }> = [
+  {
+    title: "Your code trains models it never agreed to",
+    body: "LLM pipelines bulk-ingest public repos at scale. A LICENSE file is rarely read before training — most repos never state an AI-training position at all.",
+  },
+  {
+    title: "GitHub protects one repo at a time",
+    body: "For a maintainer with dozens of repos, per-repo friction means the ones that matter never get covered. The gap is proportional to your catalog.",
+  },
+  {
+    title: "Gaps are invisible",
+    body: "A missing notice, a file that drifted, a fork that stripped your marker — no one notices until your code turns up in a training run without a say.",
+  },
+];
+
+export const PACK_MANIFEST: Array<{ file: string; role: string; pro: boolean }> = [
+  { file: "LICENSE", role: "Full license text under your holder and year.", pro: false },
+  { file: "NOTICE", role: "Explicit AI-training consent — human-readable and SPDX-stamped.", pro: false },
+  { file: "AI_TRAINING_POLICY.md", role: "Machine-readable policy plus the marker monitoring scans for.", pro: false },
+  { file: "REPO_SHIELD.txt", role: "Signature marker that flags public copies in scraping scans.", pro: false },
+  { file: ".github/workflows/repo-shield.yml", role: "Weekly monitoring run inside your own repo.", pro: true },
+  { file: "scripts/shield-check.mjs", role: "Verifies the files and heuristically scans for public copies.", pro: true },
+  { file: "apply-all.sh", role: "One command protect-commits every public repo you own.", pro: true },
+];
+
+export const DOES: Array<string> = [
+  "Stakes a written, machine-readable AI-training position on every repo.",
+  "Makes accidental ingestion visible — and gives you a defensible record if you ever need one.",
+  "Monitors every week from inside your own CI, flagging missing files and obvious re-publication.",
+];
+
+export const DOESNT: Array<string> = [
+  "Can't stop scrapers — no one can. Anyone who promises to 'block' training is selling you a lie.",
+  "Doesn't prove a model trained on your code; detection is heuristic by design.",
+  "Isn't legal advice. Templates are yours to verify against canonical SPDX text.",
+];
 
 export interface PricingTier {
   id: string;
@@ -134,7 +173,7 @@ export const TERMS_SECTIONS: Array<[string, string]> = [
 
 export const HOW_IT_WORKS: Array<[string, string]> = [
   [
-    "Answer 4 questions",
+    "Answer four questions",
     "Your GitHub user or org, the license you want (MIT is a good default), the copyright holder, and the year.",
   ],
   [
@@ -145,4 +184,11 @@ export const HOW_IT_WORKS: Array<[string, string]> = [
     "Apply it",
     "Free: drop the files in one repo. Pro: one script applies the pack to all your public repos and pushes weekly monitoring to each.",
   ],
+];
+
+export const PACK_PURPOSE: Array<[string, string]> = [
+  ["LICENSE", "locks in the license you picked, under your name"],
+  ["NOTICE", "stakes the explicit AI-training claim"],
+  ["AI_TRAINING_POLICY.md", "machine-readable consent + the marker monitoring scans for"],
+  ["REPO_SHIELD.txt", "signature marker that flags public copies"],
 ];
