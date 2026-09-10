@@ -117,6 +117,7 @@ const STYLE = `
     --warn-ink: #e8d9a6;
     --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
     --ease-out: cubic-bezier(.22,.61,.36,1);
     --radius: 12px;
     --radius-sm: 7px;
@@ -127,6 +128,8 @@ const STYLE = `
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  .ser { font-family: var(--font-serif); font-style: italic; font-weight: 500; letter-spacing: -0.005em; padding-right: .06em; }
 
   /* Header */
   header.site { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
@@ -152,7 +155,6 @@ const STYLE = `
 
   /* Hero */
   .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); background: radial-gradient(120% 90% at 78% -10%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 55%), radial-gradient(90% 70% at 8% 110%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 60%); }
-  .hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(80% 70% at 50% 0%, black, transparent 72%); opacity: .5; }
   .hero-inner { position: relative; padding: clamp(84px, 11vw, 128px) 24px clamp(80px, 10vw, 112px); max-width: 760px; }
   .hero .rule { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
   .hero .rule::before { content: ""; width: 26px; height: 1px; background: var(--accent); flex: none; }
@@ -177,11 +179,10 @@ const STYLE = `
   .split .intro { position: sticky; top: 90px; }
   @media (max-width: 820px) { .split .intro { position: static; } }
   .split .intro h2 { margin-bottom: 16px; }
-  .pain-row { border-top: 1px solid var(--line); padding: 22px 0; }
+  .pain-row { border-top: 1px solid var(--line); padding: 26px 0; }
   .pain-row:last-child { border-bottom: 1px solid var(--line); }
-  .pain-row .idx { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; color: var(--faint); display: block; margin-bottom: 8px; }
-  .pain-row h3 { margin: 0 0 6px; font-size: 1.06rem; letter-spacing: -0.012em; color: var(--ink); font-weight: 600; }
-  .pain-row p { margin: 0; color: var(--muted); max-width: 58ch; font-size: 15px; }
+  .pain-row h3 { margin: 0 0 8px; font-size: 1.18rem; letter-spacing: -0.014em; color: var(--ink); font-weight: 600; }
+  .pain-row p { margin: 0; color: var(--muted); max-width: 58ch; font-size: 15px; text-wrap: pretty; }
 
   /* Manifest: typographic index */
   .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: inset 0 1px 0 color-mix(in srgb, white 4%, transparent); overflow: hidden; }
@@ -198,7 +199,7 @@ const STYLE = `
   .step:last-child { border-bottom: 1px solid var(--line); }
   .step .n { font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; padding-top: 4px; color: var(--accent); }
   .step h3 { margin: 0 0 6px; font-size: 1.12rem; letter-spacing: -0.012em; color: var(--ink); font-weight: 600; }
-  .step p { margin: 0; color: var(--muted); max-width: 56ch; font-size: 15px; }
+  .step p { margin: 0; color: var(--muted); max-width: 56ch; font-size: 15px; text-wrap: pretty; }
   @media (max-width: 640px) { .step { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; } }
 
   /* Honesty: quiet two-column */
@@ -256,7 +257,7 @@ const STYLE = `
   .faq summary::after { content: "+"; font-size: 18px; font-weight: 400; color: var(--accent); transition: transform .2s var(--ease-out); flex: none; }
   .faq[open] summary::after { transform: rotate(45deg); }
   .faq .answer { padding: 0 4px 22px; color: var(--muted); max-width: 72ch; }
-  .faq .answer p { margin: 0 0 10px; }
+  .faq .answer p { margin: 0 0 10px; text-wrap: pretty; }
 
   /* Prose (privacy / terms / support) */
   .prose { max-width: 780px; }
@@ -278,7 +279,10 @@ const STYLE = `
   @media (max-width: 640px) { nav.site a.nav.hide-sm { display: none; } section.block { padding-top: 56px; padding-bottom: 56px; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
   .hero-inner { animation: rise .5s var(--ease-out) both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .rv { will-change: transform; }
+  .rv.played { animation: rise .55s cubic-bezier(.16,1,.3,1) both; }
+  .step.rv { animation-delay: calc(var(--i, 0) * 90ms); }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 `;
 
 function styleEl(): HTMLStyleElement {
@@ -345,9 +349,8 @@ function supportEl(): HTMLElement {
 function landingEl(): HTMLElement {
   const el = document.createElement("section");
   el.className = "landing";
-  const pains = PAIN_POINTS.map((p, i) => `
+  const pains = PAIN_POINTS.map((p) => `
     <div class="pain-row">
-      <span class="idx">0${i + 1}</span>
       <h3>${esc(p.title)}</h3>
       <p>${esc(p.body)}</p>
     </div>
@@ -359,13 +362,13 @@ function landingEl(): HTMLElement {
     </div>
   `).join("");
   const steps = HOW_IT_WORKS.map(
-    ([t, d], i) => `<div class="step"><span class="n">0${i + 1}</span><div><h3>${esc(t)}</h3><p>${esc(d)}</p></div></div>`,
+    ([t, d], i) => `<div class="step rv" style="--i:${i}"><span class="n">0${i + 1}</span><div><h3>${esc(t)}</h3><p>${esc(d)}</p></div></div>`,
   ).join("");
   el.innerHTML = `
     <div class="hero">
       <div class="wrap hero-inner">
         <div class="rule"><span class="audience">${esc(AUDIENCE)}</span></div>
-        <h1>${esc(TAGLINE)}</h1>
+        <h1>Protect <span class="ser">every public repo</span> from AI scraping.</h1>
         <p class="lede">${esc(SUB)}</p>
         <div class="hero-cta">
           <a class="btn btn-lg btn-primary" href="#/generate">Generate your pack</a>
@@ -375,28 +378,28 @@ function landingEl(): HTMLElement {
       </div>
     </div>
 
-    <div class="wrap block split hairline-top">
+    <div class="wrap block split hairline-top rv">
       <div class="intro">
-        <h2>Your public code is already being trained on.</h2>
+        <h2>Your public code is <span class="ser">already being trained on.</span></h2>
         <p class="lede-dark">Most maintainers never get the chance to say no. Not because they wouldn't, but because saying it across dozens of repos is manual work nobody ships.</p>
       </div>
       <div>${pains}</div>
     </div>
 
-    <div class="wrap block">
-      <h2>What's in your protection pack</h2>
+    <div class="wrap block rv">
+      <h2>What's <span class="ser">in your protection pack</span></h2>
       <p class="lede-dark" style="margin-bottom:26px">Four files stake the claim on every repo. The rest protects them all at once and keeps watch every week.</p>
       <div class="panel">${manifest}</div>
     </div>
 
-    <div class="wrap block hairline-top">
-      <h2>From zero to protected in minutes</h2>
+    <div class="wrap block hairline-top rv">
+      <h2>From zero to protected <span class="ser">in minutes</span></h2>
       <div class="steps">${steps}</div>
     </div>
 
-    <div class="wrap block">
+    <div class="wrap block rv">
       <div class="panel candid">
-        <h2>What Repo Shield does, and what it can't</h2>
+        <h2>What Repo Shield does, and <span class="ser">what it can't</span></h2>
         <div class="candid-grid">
           <div class="yes">
             <h3>Does</h3>
@@ -410,10 +413,10 @@ function landingEl(): HTMLElement {
       </div>
     </div>
 
-    <div class="wrap block hairline-top">
+    <div class="wrap block hairline-top rv">
       <div class="panel support-band" style="border-color:var(--accent-line);background:linear-gradient(180deg, var(--accent-tint), var(--surface))">
         <div>
-          <h2>Free forever. Built for maintainers.</h2>
+          <h2>Free forever. <span class="ser">Built for maintainers.</span></h2>
           <p class="lede-dark">Repo Shield is open source, with a custom license that keeps AI training off this code. If it saves you a headache, chip in.</p>
         </div>
         <div class="support-actions">
@@ -438,7 +441,7 @@ function faqEl(): HTMLElement {
     `,
   ).join("");
   el.innerHTML = `
-    <h2>Questions, answered straight</h2>
+    <h2>Questions, answered <span class="ser">straight</span></h2>
     <div style="margin-top:26px">${items}</div>
   `;
   return el;
@@ -477,7 +480,7 @@ function generateEl(): HTMLElement {
   const el = document.createElement("section");
   el.className = "wrap block";
   el.innerHTML = `
-    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);margin-bottom:12px">Build your protection pack</h1>
+    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);margin-bottom:12px">Build <span class="ser">your protection pack</span></h1>
     <p class="lede-dark">Answer four questions. The whole thing is free: all seven files, for as many repos as you own.</p>
     <div class="tool-grid">
       <div class="formcard">
@@ -603,6 +606,23 @@ function root(): HTMLElement {
   return document.getElementById("root") as HTMLElement;
 }
 
+function setupReveals(el: HTMLElement): void {
+  const items = el.querySelectorAll<HTMLElement>(".rv");
+  if (!items.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add("played");
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+  );
+  for (const item of Array.from(items)) io.observe(item);
+}
+
 function render(): void {
   const el = root();
   el.innerHTML = "";
@@ -618,6 +638,7 @@ function render(): void {
   else main.appendChild(landingEl());
   el.appendChild(main);
   el.appendChild(footerEl());
+  setupReveals(el);
   window.scrollTo(0, 0);
 }
 
