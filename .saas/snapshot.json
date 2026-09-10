@@ -1,0 +1,13 @@
+{
+  "latest": {
+    "createdAt": "2026-09-10T00-08-53-356Z",
+    "gitCommit": "ref: refs/heads/master",
+    "files": [
+      "specification.json",
+      "architecture.json",
+      "decisions.json",
+      "state.json",
+      "implementation-plan.json"
+    ]
+  }
+}

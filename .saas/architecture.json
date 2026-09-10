@@ -1,0 +1,24 @@
+{
+  "kind": "serverless",
+  "framework": "Next.js",
+  "rendering": "Server Components + API routes",
+  "storage": "None",
+  "authentication": "none",
+  "payments": "stripe",
+  "ai": "None",
+  "backendRequired": true,
+  "databaseRequired": false,
+  "deployment": "Vercel",
+  "cron": "GitHub Actions",
+  "dependencies": [
+    "react",
+    "stripe",
+    "vitest",
+    "zod"
+  ],
+  "decisions": [
+    "No authentication required: skipped.",
+    "Stripe payment backend + webhook required.",
+    "No persistent storage required: skipped."
+  ]
+}

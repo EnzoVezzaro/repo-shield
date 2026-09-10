@@ -1,0 +1,70 @@
+{
+  "product": {
+    "name": "Repo-Shield",
+    "problem": "Public-repos-are-being-scraped-for-AI-training-without-consent-or-credit",
+    "customer": "Prolific-open-source-developers",
+    "price": 9,
+    "recurring": true,
+    "competitors": [
+      "github-licensee-choosealicense"
+    ],
+    "differentiator": "One-click-protection-across-all-repos-plus-continuous-scraping-monitoring-github-does-not-offer",
+    "launch_channels": [
+      "hn-product-hunt",
+      "reddit-x",
+      "blog-newsletters",
+      "github-marketplace",
+      "free-tier-word-of-mouth"
+    ],
+    "via_newsletter": false,
+    "weaknesses": [
+      "deterrence-not-enforcement",
+      "monitoring-is-heuristic",
+      "no-lawyer-review"
+    ]
+  },
+  "features": [
+    "auto-add-license-and-ai-protection-files",
+    "monitor-repos-for-licensing-and-scraping-risk",
+    "free-single-repo-trial",
+    "one-time-49-usd-audit-plan",
+    "pro-9-usd-monthly"
+  ],
+  "authentication": "none",
+  "payments": {
+    "provider": "stripe",
+    "required": true
+  },
+  "ai": {
+    "provider": "openai",
+    "required": false
+  },
+  "storage": "none",
+  "deployment": {
+    "target": "static"
+  },
+  "spec_title": "Protect-all-your-GitHub-repos-from-AI-scraping-in-one-click",
+  "pricing": {
+    "pro": 9,
+    "tiers": [
+      {
+        "id": "free",
+        "name": "Free trial",
+        "price": 0,
+        "recurring": "month"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "price": 9,
+        "recurring": "month"
+      },
+      {
+        "id": "audit",
+        "name": "One-time audit",
+        "price": 49,
+        "recurring": "one-time"
+      }
+    ]
+  }
+}

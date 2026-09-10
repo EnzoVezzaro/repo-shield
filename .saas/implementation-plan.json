@@ -1,0 +1,72 @@
+{
+  "phases": [
+    {
+      "id": "foundation",
+      "description": "Project scaffold, tooling, and application shell.",
+      "dependencies": [
+        "react",
+        "stripe",
+        "vitest",
+        "zod"
+      ],
+      "outputs": [
+        "package.json",
+        "tsconfig.json",
+        "src/app",
+        "src/lib"
+      ]
+    },
+    {
+      "id": "landing",
+      "description": "Landing page and marketing shell.",
+      "dependencies": [],
+      "outputs": [
+        "README.md",
+        "privacy page",
+        "terms page"
+      ]
+    },
+    {
+      "id": "auth",
+      "description": "Authentication for the primary customer.",
+      "dependencies": [],
+      "outputs": [
+        "register",
+        "login",
+        "session handling"
+      ]
+    },
+    {
+      "id": "billing",
+      "description": "stripe payment flow.",
+      "dependencies": [
+        "stripe"
+      ],
+      "outputs": [
+        "checkout",
+        "webhook",
+        "pricing page"
+      ]
+    },
+    {
+      "id": "marketing",
+      "description": "Pricing, SEO metadata, sitemap, and robots.txt.",
+      "dependencies": [],
+      "outputs": [
+        "seo metadata",
+        "sitemap",
+        "robots.txt"
+      ]
+    },
+    {
+      "id": "deployment",
+      "description": "Deploy to Vercel and configure CI/CD.",
+      "dependencies": [],
+      "outputs": [
+        "deployment config",
+        "env requirements",
+        "workflows"
+      ]
+    }
+  ]
+}
