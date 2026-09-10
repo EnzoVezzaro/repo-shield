@@ -26,6 +26,9 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+        env:
+          VITE_STRIPE_PRO_PAYMENT_LINK: ${{ vars.VITE_STRIPE_PRO_PAYMENT_LINK }}
+          VITE_STRIPE_AUDIT_PAYMENT_LINK: ${{ vars.VITE_STRIPE_AUDIT_PAYMENT_LINK }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
