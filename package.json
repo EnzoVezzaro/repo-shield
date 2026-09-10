@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test src/*.test.ts"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^22.20.2",
     "typescript": "^5",
     "vite": "^6"
   }
