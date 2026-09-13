@@ -646,7 +646,7 @@ function generateEl(): HTMLElement {
         <h2 style="font-size:1.4rem;font-weight:800;margin:0 0 6px">Run from <span class="stamp">your terminal</span></h2>
         <p class="muted" style="margin:0 0 18px;font-size:13.5px">Three commands, no password. GitHub shows you a code to approve (device flow); Repo Shield never stores your password anywhere.</p>
         <div class="cmdlist" id="g-cmds"></div>
-        <div class="installbar"><span>Install the <strong>${esc(GITHUB_APP_SLUG)}</strong> app on the repos you want to protect.</span><a href="${INSTALL_URL}" target="_blank" rel="noopener">Install app</a></div>
+        <div class="installbar"><span>Install the <strong>Repo Shield</strong> GitHub App on the repos you want to protect — yours, your org's, or all of them. Any GitHub user can install it; it only opens pull requests for review.</span><a href="${INSTALL_URL}" target="_blank" rel="noopener">Install app</a></div>
         <details class="manual">
           <summary>Manual mode: build the pack without GitHub</summary>
           <label class="field">GitHub user or org (owner)<span class="field-hint">Used to sign the NOTICE and AI policy.</span></label>

@@ -25,8 +25,10 @@ pull request. Licenses come straight from the SPDX registry.
 
 ## Requirements
 
-Node.js 18 or newer. GitHub writes happen through the reposell GitHub App via
-device flow — no client secret required.
+Node.js 18 or newer. GitHub writes happen through the Repo Shield GitHub App —
+**any** GitHub user installs it on their own repos (yours, your org's, or all of
+them) and the CLI then opens pull requests on those repos via device flow. No
+client secret required.
 
 ## Source
 

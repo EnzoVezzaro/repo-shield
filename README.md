@@ -29,8 +29,10 @@ rs protect --all            # open a protection PR on every installed repo
 
 Or protect a single repo: `rs protect owner/repo`.
 
-Before `rs protect` can write, install the **reposell** app on the repos you
-want to protect: [`https://github.com/apps/reposell/installations/new`](https://github.com/apps/reposell/installations/new)
+Before `rs protect` can write, install the **Repo Shield** GitHub App on the repos
+you want to protect — yours, your org's, or all of them. Any GitHub user can
+install it; the app is the write mechanism `rs` uses to open pull requests on
+your behalf: [`https://github.com/apps/reposell/installations/new`](https://github.com/apps/reposell/installations/new)
 
 What happens next: Repo Shield writes the pack as one commit on a
 `repo-shield/protect` branch and opens **one pull request per repo**. Nothing on

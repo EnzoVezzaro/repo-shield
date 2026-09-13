@@ -44,8 +44,9 @@ rs protect owner/a owner/b --license isc --holder "Acme Inc" --year 2026
 rs logout
 ```
 
-Before `rs protect` can write, the **reposell** GitHub App must be installed on
-the target repos (`https://github.com/apps/reposell/installations/new`). A 403
+Before `rs protect` can write, the **Repo Shield** GitHub App must be installed on
+the target repos — anyone can install it on their own repos (yours, your org's,
+or all of them): `https://github.com/apps/reposell/installations/new`. A 403
 surface is the install hint; tell the user when you see it.
 
 ## Agent protocol (run this after you use the CLI)

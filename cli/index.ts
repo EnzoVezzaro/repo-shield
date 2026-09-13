@@ -126,7 +126,8 @@ async function login(): Promise<Config> {
       const config: Config = { token: res.token, user: { login: user.login, name: user.name ?? null, avatar_url: user.avatar_url ?? "" }, installed };
       saveConfig(config);
       console.log("Signed in as @\x1b[1m" + user.login + "\x1b[0m.");
-      if (!installed) console.log("Install the app on your repos first: " + INSTALL_URL);
+      if (!installed)
+        console.log("Install the Repo Shield app on the repos you want to protect (yours, your org's, or all of them): " + INSTALL_URL);
       return config;
     }
     if (res.error === "slow_down") interval += 5000;
@@ -168,7 +169,7 @@ function requireAuth(): Config {
 async function cmdList(config: Config): Promise<void> {
   const repos = await installationRepos(config.token);
   if (!repos.length) {
-    console.log("No repositories. Install the app on your repos: " + INSTALL_URL);
+    console.log("No repositories yet. Install the Repo Shield app on some repos — yours, your org's, or all of them: " + INSTALL_URL);
     process.exit(1);
   }
   for (const r of repos) {
@@ -189,7 +190,7 @@ function parseLicense(name: string): "mit" | "isc" | "unlicense" | "apache-2.0" 
 async function cmdProtect(config: Config, repos: string[], opts: { license?: string; holder?: string; year?: number }): Promise<void> {
   const targets = repos.length ? repos.splice(0, 50) : (await installationRepos(config.token)).slice(0, 50).map((r) => r.full_name);
   if (!targets.length) {
-    console.error("Nothing to protect. Pass repos (`rs protect owner/repo`) or --all, and install the app first: " + INSTALL_URL);
+    console.error("Nothing to protect. Pass repos (`rs protect owner/repo`) or --all, and install the Repo Shield app on the repos you want to protect — any repo you can write to: " + INSTALL_URL);
     process.exit(1);
   }
   const license = parseLicense(opts.license || "mit");
@@ -211,7 +212,7 @@ async function cmdProtect(config: Config, repos: string[], opts: { license?: str
     } else {
       console.error(`  [failed]   ${full}  ${res.error}`);
       if (classifyError(res.error || "") === "install") {
-        console.error(`             Install the app on this repo: ${INSTALL_URL}`);
+        console.error(`             Install the Repo Shield app on this repo (any repo you can write to), then re-run: ${INSTALL_URL}`);
       }
       failed++;
     }
@@ -236,7 +237,7 @@ Protect options:
   --holder <name>  Copyright holder (default: your GitHub name)
   --year <n>       Year of first publication (default: current year)
 
-Install the app first: ${INSTALL_URL}
+Install the Repo Shield app on the repos you want to protect — yours, your org's, or all of them (any GitHub user can install it): ${INSTALL_URL}
 `);
 }
 
@@ -260,7 +261,7 @@ async function main(): Promise<void> {
     const c = requireAuth();
     console.log(`@${c.user.login}${c.user.name ? " (" + c.user.name + ")" : ""}`);
     const installed = await countInstallations(c.token);
-    console.log(installed ? `App installed on ${installed} account(s).` : "App not installed yet on any account: " + INSTALL_URL);
+    console.log(installed ? `App installed on ${installed} account(s).` : "The Repo Shield app isn't installed on any of your accounts yet — install it on the repos you want to protect (yours, your org's, or all of them): " + INSTALL_URL);
     return;
   }
   if (cmd === "repos" || cmd === "list") {
