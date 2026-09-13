@@ -1,13 +1,16 @@
 export function shieldCheckScript(): string {
   return `// Repo Shield monitoring check (generated).
-// Verifies this repository carries the expected protection files and, when a
-// search term is configured, heuristically detects public copies being used
-// for training. Detection is heuristic by design; it is not proof of
-// infringement and is not legal advice.
+// Verifies this repository carries the expected protection files with a valid
+// license (SPDX identifier present, from the known set, matching NOTICE, and
+// not an un-pasted Apache/GPL placeholder), and, when a search term is
+// configured, heuristically detects public copies being used for training.
+// Detection is heuristic by design; it is not proof of infringement and is not
+// legal advice.
 import { readFileSync, existsSync } from "node:fs";
 
-const REQUIRED = ["LICENSE", "NOTICE", "AI_TRAINING_POLICY.md"];
+const REQUIRED = ["NOTICE", "AI_TRAINING_POLICY.md"];
 const MARKERS = { NOTICE: "AI-TRAINING", "AI_TRAINING_POLICY.md": "ai-training-consent" };
+const KNOWN_SPDX = ["MIT", "ISC", "Unlicense", "Apache-2.0", "GPL-3.0-only"];
 
 let failures = 0;
 const report = [];
@@ -17,6 +20,30 @@ for (const file of REQUIRED) {
   const ok = present && (!marker || readFileSync(file, "utf8").includes(marker));
   if (!ok) failures++;
   report.push(\`\${ok ? "OK  " : "FAIL"} \${file}\`);
+}
+
+// License self-check: LICENSE must exist, carry a known SPDX identifier, and
+// must not be an un-pasted placeholder. The claimed license in NOTICE must
+// match the LICENSE identifier.
+const licenseText = existsSync("LICENSE") ? readFileSync("LICENSE", "utf8") : "";
+const licenseMatch = (text) => (text.match(/SPDX-License-Identifier:\\s*(\\S+)/) || [])[1];
+const licenseId = licenseMatch(licenseText);
+const noticeId = existsSync("NOTICE") ? licenseMatch(readFileSync("NOTICE", "utf8")) : null;
+const known = !!licenseId && KNOWN_SPDX.includes(licenseId);
+const placeholder = /not embedded/.test(licenseText);
+const licenseOk = known && !placeholder;
+const licenseNote = !licenseId
+  ? "(missing SPDX-License-Identifier)"
+  : !known
+    ? \`(unrecognized license: \${licenseId})\`
+    : placeholder
+      ? "(placeholder — paste the canonical full text)"
+      : \`(\${licenseId})\`;
+report.push(\`\${licenseOk ? "OK  " : "FAIL"} LICENSE \${licenseNote}\`);
+if (!licenseOk) failures++;
+if (licenseOk && noticeId && noticeId !== licenseId) {
+  failures++;
+  report.push(\`FAIL NOTICE license mismatch (NOTICE: \${noticeId}, LICENSE: \${licenseId})\`);
 }
 console.log(report.join("\\n"));
 

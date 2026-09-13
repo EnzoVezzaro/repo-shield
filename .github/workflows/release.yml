@@ -1,0 +1,40 @@
+name: Publish CLI to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify tag matches cli version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="$(node -p "require('./cli/package.json').version")"
+          test "${TAG}" = "v${VERSION}" || {
+            echo "Tag ${TAG} does not match cli/package.json version ${VERSION}"
+            exit 1
+          }
+
+      - name: Build CLI
+        working-directory: cli
+        run: npm run build
+
+      - name: Publish to npm
+        working-directory: cli
+        run: npm publish --provenance --access public

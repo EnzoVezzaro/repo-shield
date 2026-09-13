@@ -1,71 +1,119 @@
+<p align="center">
+  <img src="public/images/logo.png" alt="Repo Shield" width="360" />
+</p>
+
 # Repo Shield
 
-Protect every public repo from AI scraping.
+**Claim your code. Stop AI pipelines from silently training on it.**
 
-Your public code gets bulk-ingested by AI training pipelines without consent or
-credit. Repo Shield builds you a protection pack: a `LICENSE`, an explicit
-AI-training `NOTICE`, and a machine-readable policy that state who can and
-can't use your code. Then it keeps watch every week so gaps get fixed before
-they bite.
+Your public repos get bulk-ingested into AI training corpora every day — no
+consent, no credit, often no trace. Repo Shield gives you a simple, honest,
+enforceable position: a signed `LICENSE`, an explicit AI-training `NOTICE`, a
+machine-readable policy, and a weekly watch that keeps them from fading.
 
-> Honest caveat: this is **deterrence, not enforcement**. Generated files stake
+Free, open source, and only as complicated as you want it to be.
+
+> **Honest caveat:** this is deterrence, not enforcement. Generated files stake
 > your position and make accidental ingestion visible. Nobody can "block" AI
-> scrapers, and anyone who promises that to you is selling a lie.
+> scrapers, and anyone who promises that is selling a lie.
 
-## Open source
+## Get started
 
-Repo Shield is **free and open source**, with one condition: no AI training on
-this code (see [LICENSE](./LICENSE)). No plans, no tiers, no paywalled features.
-Everything is included for every repo you own.
+One terminal, three commands, zero servers:
 
-If the tool saves you a headache, a donation covers hosting and maintenance:
-**[Donate](https://enzovezzaro.github.io/repo-shield/#/support)** · [Star on GitHub](https://github.com/EnzoVezzaro/repo-shield)
+```bash
+npm i -g @reposell/repo-shield   # installs `rs`
+rs login                    # sign in with GitHub (device flow, no password)
+rs protect --all            # open a protection PR on every installed repo
+```
 
-## How it works
+Or protect a single repo: `rs protect owner/repo`.
 
-1. **Answer 4 questions** — your GitHub user/org, the license (MIT is a good
-   default), the copyright holder, and the year.
-2. **Download your protection pack** — `LICENSE`, a `NOTICE` with explicit
-   AI-training consent, a machine-readable `AI_TRAINING_POLICY.md`, plus the
-   monitoring workflow and check script.
-3. **Apply it** — drop the files into one repo by hand, or let `apply-all.sh`
-   protect every public repo you own and install weekly monitoring on each.
+Before `rs protect` can write, install the **reposell** app on the repos you
+want to protect: [`https://github.com/apps/reposell/installations/new`](https://github.com/apps/reposell/installations/new)
+
+What happens next: Repo Shield writes the pack as one commit on a
+`repo-shield/protect` branch and opens **one pull request per repo**. Nothing on
+your default branch changes until you review and merge. Re-running on the same
+repo just reuses the open PR.
 
 ## What's in the pack
 
 | File | Purpose |
 |------|---------|
-| `LICENSE` | Chosen license with SPDX identifier (MIT, ISC, Unlicense inline; Apache-2.0 and GPL-3.0 link the canonical text you must paste) |
-| `NOTICE` | Copyright + explicit AI-training/machine-learning consent clause |
-| `AI_TRAINING_POLICY.md` | Machine-readable consent key consumed by the monitor |
-| `REPO_SHIELD.txt` | Signature marker that flags public copies in scraping scans |
-| `.github/workflows/repo-shield.yml` | Weekly check that the files stay present; optional heuristic scrape scan |
-| `scripts/shield-check.mjs` | The check itself — runs in your repo, not ours |
-| `apply-all.sh` | One command: protect + push to every public repo, skips forks |
+| `LICENSE` | Your chosen license, with an SPDX identifier |
+| `NOTICE` | Copyright + explicit AI-training consent clause |
+| `AI_TRAINING_POLICY.md` | Machine-readable consent key |
 
-Monitoring runs inside your own repository via GitHub Actions with the existing
+Plus two kept-in-sync extras for public repos:
+
+| File | Purpose |
+|------|---------|
+| `REPO_SHIELD.txt` | Signature marker that flags copies in scrape scans |
+| `.github/workflows/repo-shield.yml` | Weekly monitor (runs in your repo, not ours) |
+| `scripts/shield-check.mjs` | The check itself — verifies files, license, markers |
+
+The monitor runs weekly on GitHub Actions with your repo's existing
 `GITHUB_TOKEN`. Repo Shield never sees your code.
 
-## License (for this repo)
+## Pick a license
 
-Released under the **Repo Shield Source License (No AI Training)** — permissive
-for use, modification, and distribution, with one additional term: the software
-may not be used to train machine-learning models. Full text in [LICENSE](./LICENSE).
+The defaults are the safest, most common choices for public code:
 
-## Stack
+| License | When to use it |
+|---------|----------------|
+| **MIT** | The default. Permissive, tiny, understood everywhere. |
+| **ISC** | Minimal permissive — the whole grant fits in a paragraph. |
+| **Apache-2.0** | Permissive plus an explicit patent grant, for big projects. |
+| **GPL-3.0** | Copyleft: derivatives must stay free. File as `GPL-3.0-only`. |
+| **Unlicense** | Your code, public domain. |
 
-Static-first Vite + TypeScript app. The donation link is a Stripe Payment Link
-wired via `VITE_STRIPE_PRO_PAYMENT_LINK` (falls back to the in-app Support page).
-Deployable to GitHub Pages or any static host.
+Every license is written into your repo as the complete canonical text from the
+official [SPDX](https://spdx.org/licenses/) registry — including Apache-2.0 and
+GPL-3.0, no paste step needed. MIT and ISC get your holder and year filled in.
+An approximate license is worse than none.
+
+Every generated `LICENSE` carries an `SPDX-License-Identifier` header, and the
+monitor verifies the identifier is from the known set and matches the `NOTICE`.
+No AI-training clause, or a wrong license id, fails the weekly check and opens
+an issue telling you exactly which file to fix.
+
+## No GitHub account?
+
+Build the pack straight from the manual mode on the site
+([`#/generate`](https://enzovezzaro.github.io/repo-shield/#/generate)) — pick
+the files you want and download them, or use `apply-all.sh` offline.
+
+## For agents
+
+The same flow is packaged as an Agent Skill for coding agents
+(`skills/repo-shield/SKILL.md`) — an agent can sign in once, protect a repo or
+an organisation, and report the PR numbers back. Same CLI, same pull requests,
+same review step before anything merges.
+
+## Open source
+
+Repo Shield is free and open source, with the condition that it stays *yours*:
+the **Repo Shield Source License (No AI Training)** lets anyone use, read, and
+improve this code, and explicitly forbids using the software itself to train a
+machine-learning model. Full terms in [`LICENSE`](./LICENSE).
+
+If the tool saves your repos from a scrape, a small donation covers hosting and
+maintenance:
+
+- **[Donate](https://enzovezzaro.github.io/repo-shield/#/support)**
+- **[Star on GitHub](https://github.com/EnzoVezzaro/repo-shield)**
+- **[Read the design system](DESIGN.md)**
 
 ## Development
 
 ```bash
 npm install
-npm run dev      # local dev server
-npm run build    # production build
+npm run dev        # local dev server
+npm run build      # production build
 npm run typecheck
-npm test
+npm test           # pack + license + CLI protect-flow unit tests
 ```
 
-Managed by [SaaS Factory](https://github.com/anomalyco/saas-factory).
+Static Vite + TypeScript app, deployed to GitHub Pages. No server components.
+Requires Node 22.6+ to run the CLI directly.

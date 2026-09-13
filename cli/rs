@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Repo Shield CLI launcher. Runs the TS CLI directly (Node 22+ strips types).
+# Resolves its own path through npm's bin symlink so `npm i -g` works.
+set -euo pipefail
+SOURCE="${BASH_SOURCE[0]}"
+while [ -L "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  TARGET="$(readlink "$SOURCE")"
+  [[ "$TARGET" != /* ]] && SOURCE="$DIR/$TARGET" || SOURCE="$TARGET"
+done
+DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+exec node --experimental-strip-types "$DIR/index.ts" "$@"
