@@ -1,6 +1,12 @@
 import {
+  AGENT_ABOUT,
+  AGENT_LINE,
+  AGENT_POINTS,
+  AGENT_SKILL_URL,
   AUDIENCE,
   BRAND,
+  CLI_COMMANDS,
+  CLI_OPTIONS,
   DOES,
   DOESNT,
   FAQS,
@@ -318,6 +324,41 @@ const STYLE = `
   .cmdhint code { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
   .installbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border: 1px dashed var(--accent-line); background: var(--accent-tint); padding: 10px 14px; font-size: 13.5px; color: var(--ink); }
   .installbar a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Landing CLI reference */
+  .clidocs { border: 1px solid var(--line); background: var(--surface); }
+  .clidocs-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+  .clidocs-head .prompt { margin-left: auto; color: var(--faint); font-weight: 600; }
+  .clidocs-row { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+  .clidocs-row:last-of-type { border-bottom: none; }
+  .clidocs-row .cd-top { display: flex; align-items: baseline; gap: 10px; }
+  .clidocs-row code { font-family: var(--font-mono); font-size: 13px; color: var(--accent); word-break: break-all; }
+  .clidocs-row .cd-label { margin-left: auto; flex: none; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .clidocs-row .cd-desc { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.55; max-width: 60ch; }
+  .clidocs-options { padding: 14px 18px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; }
+  .clidocs-options .opt-lbl { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .clidocs-options code { font-family: var(--font-mono); font-size: 12px; color: var(--ink); word-break: break-all; }
+  .cli-meta { display: grid; gap: 10px; }
+  .cli-meta .cm-row { border: 1px solid var(--line); background: var(--surface); padding: 12px 14px; font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .cli-meta .cm-row code { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .cli-meta .cm-row strong { color: var(--ink); font-weight: 600; }
+
+  /* Landing agent-skill section */
+  .agent-band { border: 1px solid var(--line); background: var(--surface); position: relative; }
+  .agent-band::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: repeating-linear-gradient(-45deg, var(--accent) 0 12px, #05070a 12px 24px); }
+  .agent-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 26px; padding: 30px 30px 32px; align-items: stretch; }
+  @media (max-width: 900px) { .agent-grid { grid-template-columns: 1fr; } }
+  .agent-copy h3 { margin: 0 0 8px; font-size: 1.35rem; }
+  .agent-copy > p { margin: 0 0 14px; color: var(--muted); max-width: 54ch; }
+  .agent-copy .ak { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .agent-copy .ak li { display: flex; gap: 10px; font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+  .agent-copy .ak li .a-yes { color: var(--accent); font-family: var(--font-mono); font-weight: 700; flex: none; }
+  .agent-copy { min-width: 0; }
+  .agent-card { min-width: 0; border: 1px dashed var(--accent-line); background: var(--accent-tint); padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .agent-card .ac-label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .agent-card pre { margin: 0; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); font-family: var(--font-mono); font-size: 11.5px; line-height: 1.7; color: var(--code-ink); overflow-x: auto; }
+  .agent-card .ac-note { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .agent-card a.btn { align-self: flex-start; }
   details.manual { margin-top: 22px; border-top: 1px dashed var(--line); padding-top: 14px; }
   details.manual summary { cursor: pointer; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   details.manual[open] summary { margin-bottom: 12px; }
@@ -494,6 +535,20 @@ function landingEl(): HTMLElement {
   const steps = HOW_IT_WORKS.map(
     ([t, d], i) => `<div class="step rv" style="--i:${i}"><span class="n">0${i + 1}</span><div><h3>${esc(t)}</h3><p>${esc(d)}</p></div></div>`,
   ).join("");
+  const cmds = CLI_COMMANDS.map(
+    (c) => `
+      <div class="clidocs-row">
+        <div class="cd-top">
+          <code>${esc(c.cmd)}</code>
+          <span class="cd-label">${esc(c.label)}</span>
+        </div>
+        <p class="cd-desc">${esc(c.desc)}</p>
+      </div>
+    `,
+  ).join("");
+  const agentPoints = AGENT_POINTS.map(
+    ([t, d]) => `<li><span class="a-yes">YES</span><span><strong>${esc(t)}</strong> — ${esc(d)}</span></li>`,
+  ).join("");
   el.innerHTML = `
     <div class="hero">
       <div class="wrap hero-inner">
@@ -547,7 +602,46 @@ function landingEl(): HTMLElement {
     </div>
 
     <div class="wrap block rv">
-      <div class="sechead"><span class="secnum">04</span><h2>What Repo Shield does, and <span class="stamp">what it can't</span></h2></div>
+      <div class="sechead"><span class="secnum">04</span><h2>One terminal, <span class="stamp">six commands</span></h2></div>
+      <p class="lede-dark">The whole tool. Everything else in Repo Shield is the files this CLI writes for you.</p>
+      <div class="tool-grid">
+        <div class="clidocs">
+          <div class="clidocs-head"><span class="pdot"></span>rs — command reference<span class="prompt">$ rs&#8202;...&#8203;</span></div>
+          ${cmds}
+          <div class="clidocs-options"><span class="opt-lbl">protect options</span><code>${esc(CLI_OPTIONS)}</code></div>
+        </div>
+        <div class="cli-meta">
+          <div class="cm-row">Node <strong>18+</strong>, no server, no database. Sign-in is device flow — GitHub prints a code, you approve it in the browser, and nothing is stored except a token on your machine.</div>
+          <div class="cm-row">Writes land on a <code>repo-shield/protect</code> branch.</div>
+          <div class="cm-row">Re-running on a repo reuses the <strong>open pull request</strong> — never a duplicate branch or PR.</div>
+          <div class="cm-row">Licenses embed the <strong>canonical SPDX text</strong>; the weekly monitor verifies the files still exist.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap block hairline-top rv">
+      <div class="sechead"><span class="secnum">05</span><h2>Use it from an <span class="stamp">AI coding agent</span></h2></div>
+      <div class="agent-band">
+        <div class="agent-grid">
+          <div class="agent-copy">
+            <h3>${esc(AGENT_LINE)}</h3>
+            <p>${esc(AGENT_ABOUT)}</p>
+            <ul class="ak">${agentPoints}</ul>
+          </div>
+          <div class="agent-card">
+            <span class="ac-label">Agent skill — skills/repo-shield/SKILL.md</span>
+            <pre>npm i -g @reposell/repo-shield
+rs login
+rs protect owner/a owner/b --license isc</pre>
+            <p class="ac-note">Point a coding agent at the skill file and it can sign in once, protect a repo or an organisation, and report the pull request links back.</p>
+            <a class="btn btn-primary" href="${esc(AGENT_SKILL_URL)}" target="_blank" rel="noopener">Read the skill</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap block hairline-top rv">
+      <div class="sechead"><span class="secnum">06</span><h2>What Repo Shield does, and <span class="stamp">what it can't</span></h2></div>
       <div class="candid">
         <div class="candid-grid">
           <div class="candid-col does">

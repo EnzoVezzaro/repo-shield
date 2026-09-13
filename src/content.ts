@@ -136,17 +136,48 @@ export const TERMS_SECTIONS: Array<[string, string]> = [
 
 export const HOW_IT_WORKS: Array<[string, string]> = [
   [
-    "Answer four questions",
-    "Your GitHub user or org, the license you want (MIT is a good default), the copyright holder, and the year.",
+    "Install the CLI",
+    "One line: npm i -g @reposell/repo-shield. The rs command runs on any machine with Node 18 or newer.",
   ],
   [
-    "Download your protection pack",
-    "LICENSE, a NOTICE with explicit AI-training consent, and a machine-readable policy, plus the monitoring workflow and check script.",
+    "Sign in, pick your repos",
+    "rs login uses GitHub device flow — no password is ever stored. Install the Repo Shield app on the repos you want protected: yours, your org's, or all of them.",
   ],
   [
-    "Apply it",
-    "Drop the files into one repo by hand, or let apply-all.sh protect every public repo you own and push weekly monitoring to each.",
+    "Review one PR per repo",
+    "rs protect opens a single pull request with the full pack on a repo-shield/protect branch. Nothing merges until you say so.",
   ],
+];
+
+export interface CliCommand {
+  cmd: string;
+  label: string;
+  desc: string;
+}
+
+export const CLI_COMMANDS: CliCommand[] = [
+  { cmd: "rs login", label: "Sign in", desc: "Device flow: GitHub prints a code, you approve in the browser. No password is stored." },
+  { cmd: "rs whoami", label: "Identity", desc: "Shows your account and whether the app is installed." },
+  { cmd: "rs repos", label: "Repos", desc: "Lists every repository the app can write to." },
+  { cmd: "rs protect owner/repo", label: "Protect one repo", desc: "Opens one pull request with the full protection pack." },
+  { cmd: "rs protect --all", label: "Protect everything", desc: "One pull request per repo across every installed repo, 50 at a time." },
+  { cmd: "rs logout", label: "Sign out", desc: "Forgets your session on this machine." },
+];
+
+export const CLI_OPTIONS = 'rs protect --license apache-2.0 --holder "Acme Inc" --year 2026';
+
+export const AGENT_SKILL_URL = "https://github.com/EnzoVezzaro/repo-shield/blob/main/skills/repo-shield/SKILL.md";
+
+export const AGENT_LINE = "Repo Shield is a first-class tool for AI coding agents.";
+
+export const AGENT_ABOUT =
+  "An agent can install the CLI once, sign in, protect a single repo or an entire organisation, and report the PR numbers back. Same CLI, same pull requests, same human review step before anything merges.";
+
+export const AGENT_POINTS: Array<[string, string]> = [
+  ["One CLI, human or agent", "The skill drives the exact same rs binary a person runs — there is no separate API or workflow to learn."],
+  ["Org-wide in one command", "protect owner/a owner/b, or --all for every repo the app is installed on."],
+  ["Safe by construction", "Every repo gets its own pull request on a repo-shield/protect branch. No default branch is touched without review."],
+  ["Tells you when it can't", "Install or 403 failures surface as a clear re-run step instead of being skipped silently."],
 ];
 
 export const PACK_PURPOSE: Array<[string, string]> = [

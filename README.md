@@ -12,6 +12,9 @@ enforceable position: a signed `LICENSE`, an explicit AI-training `NOTICE`, a
 machine-readable policy, and a weekly watch that keeps them from fading.
 
 Free, open source, and only as complicated as you want it to be.
+Web site: [repo-shield](https://enzovezzaro.github.io/repo-shield/) · CLI:
+[`@reposell/repo-shield`](https://www.npmjs.com/package/@reposell/repo-shield) ·
+Agent skill: [`skills/repo-shield/SKILL.md`](skills/repo-shield/SKILL.md)
 
 > **Honest caveat:** this is deterrence, not enforcement. Generated files stake
 > your position and make accidental ingestion visible. Nobody can "block" AI
@@ -22,7 +25,7 @@ Free, open source, and only as complicated as you want it to be.
 One terminal, three commands, zero servers:
 
 ```bash
-npm i -g @reposell/repo-shield   # installs `rs`
+npm i -g @reposell/repo-shield   # installs `rs` (Node 18+)
 rs login                    # sign in with GitHub (device flow, no password)
 rs protect --all            # open a protection PR on every installed repo
 ```
@@ -38,6 +41,55 @@ What happens next: Repo Shield writes the pack as one commit on a
 `repo-shield/protect` branch and opens **one pull request per repo**. Nothing on
 your default branch changes until you review and merge. Re-running on the same
 repo just reuses the open PR.
+
+## CLI reference
+
+| Command | What it does |
+|---------|--------------|
+| `rs login` | Device-flow sign-in. GitHub prints a code, you approve it in the browser; a token is stored in `~/.config/repo-shield/config.json` (0600) on your machine. |
+| `rs whoami` | Your account + whether the app is installed. |
+| `rs repos` | Every repository the app can write to. |
+| `rs protect owner/repo` | Opens one protection PR on that repo. |
+| `rs protect owner/a owner/b` | One PR per repo, up to 50 per run. |
+| `rs protect --all` | One PR per repo across every installed repo. |
+| `rs logout` | Forgets your session. |
+
+`rs protect` options:
+
+```
+--license <id>   mit | isc | unlicense | apache-2.0 | gpl-3.0   (default: mit)
+--holder <name>  Copyright holder (default: your GitHub name)
+--year <n>       Year of first publication (default: current year)
+```
+
+Protected file(s) are written as one commit on a `repo-shield/protect` branch.
+If a PR for the repo is already open, `rs protect` reuses it.
+
+## For AI coding agents
+
+Repo Shield is a **first-class tool for coding agents**. The same flow a
+maintainer runs by hand is packaged as an Agent Skill — an agent can be pointed
+at [`skills/repo-shield/SKILL.md`](skills/repo-shield/SKILL.md), sign in once,
+protect one repo or an entire organisation, and hand the pull request links
+back. No separate API, no server, no admin.
+
+```
+npm i -g @reposell/repo-shield
+rs login
+rs protect owner/a owner/b --license isc
+```
+
+Why it's safe to hand to an agent:
+
+- **Same CLI, no second system.** There is no web API or different tool for the
+  agent to learn — it drives the exact `rs` binary a human runs.
+- **Org-wide in one command.** `protect owner/a owner/b`, or `--all` for
+  everything the app is installed on.
+- **Reviewable by construction.** Every repo gets its own pull request on a
+  `repo-shield/protect` branch. Nothing is ever pushed to a default branch
+  without a human merging it.
+- **It says when it can't.** A 403 or missing-install surfaces as a clear
+  re-run step (the skill does not skip repos silently).
 
 ## What's in the pack
 
@@ -86,13 +138,6 @@ Build the pack straight from the manual mode on the site
 ([`#/generate`](https://enzovezzaro.github.io/repo-shield/#/generate)) — pick
 the files you want and download them, or use `apply-all.sh` offline.
 
-## For agents
-
-The same flow is packaged as an Agent Skill for coding agents
-(`skills/repo-shield/SKILL.md`) — an agent can sign in once, protect a repo or
-an organisation, and report the PR numbers back. Same CLI, same pull requests,
-same review step before anything merges.
-
 ## Open source
 
 Repo Shield is free and open source, with the condition that it stays *yours*:
@@ -118,4 +163,16 @@ npm test           # pack + license + CLI protect-flow unit tests
 ```
 
 Static Vite + TypeScript app, deployed to GitHub Pages. No server components.
-Requires Node 22.6+ to run the CLI directly.
+The published CLI is compiled JS and runs on Node 18+; running the TypeScript
+sources directly (tests, `npm run cli`) needs Node 22.6+.
+
+### Releasing the CLI
+
+The npm package (`@reposell/repo-shield`) auto-publishes from GitHub Actions
+when a `v*` tag is pushed, once the repo is connected as a trusted publisher
+for the package in npm settings:
+
+```bash
+# bump cli/package.json first (tag must match the version exactly)
+git tag v0.1.3 && git push origin v0.1.3
+```
