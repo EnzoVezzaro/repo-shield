@@ -243,17 +243,28 @@ Static Vite + TypeScript app, deployed to GitHub Pages. No server components.
 The published CLI is compiled JS and runs on Node 18+; running the TypeScript
 sources directly (tests, `npm run cli`) needs Node 22.6+.
 
-Quality gates: `node scripts/check_no_emoji.py`,
-`node .impeccable/repo-shield-verify.mjs all` (6 PASS: contrast + overflow,
-light/dark), and `scripts/validate_tokens.py` — the whole suite runs in CI.
+Quality gates, all run in CI on every push/PR
+([`.github/workflows/ci.yml`](https://github.com/EnzoVezzaro/repo-shield/blob/main/.github/workflows/ci.yml)):
+
+- `python3 scripts/check_no_emoji.py` — zero emoji in UI, taste docs, or the agent instruction surface
+- `python3 scripts/validate_tokens.py` — token files parse and aliases resolve
+- `python3 scripts/validate_contrast.py` — token pairs pass WCAG, light + dark
+- `python3 scripts/validate_component_spec.py` — component specs are complete
+- `node .impeccable/repo-shield-verify.mjs all` — real-render gate in Google Chrome:
+  computed-style contrast + overflow across all six routes at 1440px and
+  280/320/414px. Expect `PASS: contrast + overflow, 6 route(s) clean`. Needs
+  `npm run build`, then `npm run preview` running on :5178, and Chrome installed.
+- `npm test` / `npm run typecheck` / `npm run build`
 
 ### Releasing the CLI
 
 The npm package (`@reposell/repo-shield`) auto-publishes from GitHub Actions
-when a `v*` tag is pushed, once the repo is connected as a trusted publisher
-for the package in npm settings:
+when a `v*` tag is pushed. The repo needs an `NPM_TOKEN` secret (an npm token
+with publish rights) under Settings > Secrets and variables > Actions; for
+provenance on a first-ever publish, the repo must also be connected as a
+trusted publisher in npm settings:
 
 ```bash
 # bump cli/package.json first (tag must match the version exactly)
-git tag v0.1.5 && git push origin v0.1.5
+git tag v0.1.6 && git push origin v0.1.6
 ```

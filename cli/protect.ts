@@ -24,6 +24,32 @@ export interface ProtectOpts {
   year: number;
 }
 
+/**
+ * Parse `rs protect` arguments: positional repo targets plus option values.
+ * Option values are excluded from the repo list, so the documented form
+ * `protect owner/a owner/b --license isc --holder "Acme Inc" --year 2026`
+ * targets exactly the two repos and none of the option values.
+ */
+export function parseProtectArgs(rest: string[]): { all: boolean; repos: string[]; license?: string; holder?: string; year?: number } {
+  const all = rest.includes("--all");
+  const valueOpts = new Set(["--license", "--holder", "--year"]);
+  const repos: string[] = [];
+  const values = new Map<string, string>();
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    if (a === "--all") continue;
+    if (valueOpts.has(a)) {
+      if (i + 1 < rest.length && !rest[i + 1].startsWith("--")) values.set(a, rest[i + 1]);
+      i++;
+      continue;
+    }
+    if (a.startsWith("--")) continue;
+    repos.push(a);
+  }
+  const yearRaw = values.get("--year");
+  return { all, repos, license: values.get("--license"), holder: values.get("--holder"), year: yearRaw !== undefined ? Number(yearRaw) : undefined };
+}
+
 export interface ProtectResult {
   full_name: string;
   status: "ok" | "exists" | "error";

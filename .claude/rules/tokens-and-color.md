@@ -94,6 +94,6 @@ Every page, screen, and component in a project MUST render from **one shared tok
 1. **One source of truth** — the project's `tokens/*.json` → a single CSS-variable layer (`:root` + `[data-theme="dark"]`) imported **once** at the app root. Every page references the same semantic tokens; none redefines colors.
 2. **No off-theme values** — zero hardcoded hex/px/timing in component/page code. Enforced by `scripts/lint_hardcodes.py` (the one allowed exception: adapter theme-config that maps our tokens *into* a 3rd-party API, e.g. MUI/Mantine).
 3. **Real WCAG, on the source** — the token theme itself passes WCAG 2.2 in **both** light and dark before any page ships. Enforced by `scripts/validate_contrast.py` (required text/action pairs fail the build; tertiary/decorative are advisory).
-4. **One CI enforces all of it** — `.github/workflows/ci.yml` runs `validate_tokens` + `validate_contrast` + `validate_component_spec` + `npm test` on every push/PR. A page that introduces drift, a contrast regression, or an off-theme color cannot merge.
+4. **One CI enforces all of it** — `.github/workflows/ci.yml` runs `validate_tokens` + `validate_contrast` + `validate_component_spec` + `check_no_emoji` + `npm test`, `npm run typecheck`, and `npm run build` on every push/PR. A page that introduces drift, a contrast regression, or an off-theme color cannot merge.
 
 > Switching brand/theme = editing the token source once → every page updates. If a page "looks different," it's a bug: it bypassed the theme.

@@ -69,7 +69,9 @@ GitHub writes are involved — prefer it.
 ## Verification gates for this repo
 
 - `npm run typecheck` then `npm run build`
-- `node scripts/check_no_emoji.py` — zero emoji in product UI
-- `node .impeccable/repo-shield-verify.mjs all` — 6 PASS (contrast + overflow,
-  light/dark) expected
+- `python3 scripts/check_no_emoji.py` — zero emoji in product UI
+- `python3 scripts/validate_tokens.py` — token files parse and aliases resolve
+- `node .impeccable/repo-shield-verify.mjs all` — real-render gate in Google
+  Chrome; expect `PASS: contrast + overflow, 6 route(s) clean` (needs `npm run
+  build`, then `npm run preview` on :5178, and Chrome installed)
 - `npm test` — protection-pack and CLI protect-flow unit tests

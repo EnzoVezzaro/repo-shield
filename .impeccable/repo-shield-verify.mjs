@@ -1,7 +1,11 @@
 import { chromium } from "playwright-core";
 
 const BASE = process.env.BASE || "http://localhost:5178/#/";
-const browser = await chromium.launch({ channel: "chrome", headless: true });
+const browser = await chromium.launch(
+  process.env.CHROME_PATH
+    ? { executablePath: process.env.CHROME_PATH, headless: true }
+    : { channel: "chrome", headless: true }
+);
 const out = { failures: [], passes: 0, notes: [] };
 
 function parseColor(s) {
@@ -95,5 +99,10 @@ for (const route of pages) {
   await page.close();
 }
 
+const summary = out.failures.length
+  ? `FAIL: ${out.failures.length} issue(s) across ${pages.length} route(s)`
+  : `PASS: contrast + overflow, ${out.passes} route(s) clean`;
+console.log(summary);
 console.log(JSON.stringify(out, null, 2).slice(0, 10000));
 await browser.close();
+process.exit(out.failures.length ? 1 : 0);

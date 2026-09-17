@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { protectRepo, classifyError, BRANCH, PR_TITLE } from "./protect.ts";
+import { protectRepo, classifyError, parseProtectArgs, BRANCH, PR_TITLE } from "./protect.ts";
 
 interface RecordedCall {
   method: string;
@@ -144,4 +144,25 @@ test("invalid repo names are rejected before any network call", async () => {
   } finally {
     restore();
   }
+});
+
+test("parseProtectArgs keeps option values out of the repo list (documented form)", () => {
+  const p = parseProtectArgs(["owner/a", "owner/b", "--license", "isc", "--holder", "Acme Inc", "--year", "2026"]);
+  assert.deepEqual(p.repos, ["owner/a", "owner/b"]);
+  assert.equal(p.all, false);
+  assert.equal(p.license, "isc");
+  assert.equal(p.holder, "Acme Inc");
+  assert.equal(p.year, 2026);
+});
+
+test("parseProtectArgs handles options before repos, --all, and unknown flags", () => {
+  assert.deepEqual(parseProtectArgs(["--license", "gpl-3.0", "org/x"]).repos, ["org/x"]);
+  assert.deepEqual(parseProtectArgs(["--license", "gpl-3.0", "org/x"]).license, "gpl-3.0");
+  const all = parseProtectArgs(["--all", "--license", "apache-2.0", "--year", "1999"]);
+  assert.equal(all.all, true);
+  assert.deepEqual(all.repos, []);
+  assert.equal(all.year, 1999);
+  assert.deepEqual(parseProtectArgs(["org/x", "--unexpected", "org/y"]).repos, ["org/x", "org/y"]);
+  assert.equal(parseProtectArgs(["org/x", "--year"]).year, undefined);
+  assert.equal(parseProtectArgs([]).repos.length, 0);
 });

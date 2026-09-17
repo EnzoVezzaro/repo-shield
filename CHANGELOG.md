@@ -4,6 +4,38 @@ All notable changes to Repo Shield (web site, CLI, Agent Skill) are documented
 here. Versions track the npm package `@reposell/repo-shield`; the same commits
 ship the site and the skill.
 
+## [0.1.6] - 2026-09-17
+
+### Fixed
+
+- `rs protect owner/a owner/b --license ... --holder "..." --year ...` no longer
+  treats option values as repo targets — the documented multi-repo form now
+  protects exactly the repos given (previously `isc`, the holder name, and the
+  year were each attempted as a fake repo).
+- An unknown `--license <id>` now fails with the valid list
+  (`mit | isc | unlicense | apache-2.0 | gpl-3.0`) instead of silently falling
+  back to MIT, so a typo'd license can never fling a repo into the wrong license.
+- Invalid `--year` values (`0`, negative, or non-numeric) now fall back to the
+  current year instead of writing a broken copyright line.
+- The npm release workflow authenticates `npm publish --provenance` with the
+  `NPM_TOKEN` secret (it previously failed with `ENEEDAUTH`) and fails with a
+  clear message when that secret is missing.
+- CI now runs the full documented quality-gate suite: a `quality` job
+  (typecheck, tests, build, `validate_tokens`, `validate_contrast`,
+  `validate_component_spec`, `check_no_emoji`) and a `render` job that drives the
+  real Chrome contrast + overflow gate against a built preview.
+- The render gate now prints a `PASS`/`FAIL` summary and exits non-zero when an
+  issue is found, and honours `CHROME_PATH` so CI can point it at any Chrome
+  build.
+
+### Changed
+
+- Documentation corrected to match reality: quality-gate commands now show the
+  real runner (`python3 scripts/check_no_emoji.py`, not `node`), the render gate
+  is described as light-theme contrast + overflow across the six routes (not
+  "light/dark"), and the READMEs state the suite that actually runs in CI.
+- Root `package.json` version synced to the npm package version.
+
 ## [0.1.5] - 2026-09-13
 
 ### Changed

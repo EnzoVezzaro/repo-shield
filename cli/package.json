@@ -1,6 +1,6 @@
 {
   "name": "@reposell/repo-shield",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Repo Shield — protect GitHub repos from AI scraping with a license, AI-training notice, and a monitoring workflow, via one pull request per repo.",
   "license": "SEE LICENSE IN LICENSE",
   "repository": {

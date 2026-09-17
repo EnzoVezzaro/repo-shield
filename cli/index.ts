@@ -9,7 +9,7 @@
 import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync, chmodSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { protectRepo, classifyError } from "./protect.ts";
+import { protectRepo, classifyError, parseProtectArgs } from "./protect.ts";
 
 const GH = "https://api.github.com";
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID || "Iv23lidhennqrdpdFUAT";
@@ -184,7 +184,7 @@ function parseLicense(name: string): "mit" | "isc" | "unlicense" | "apache-2.0" 
   if (n === "unlicense") return "unlicense";
   if (n === "apache-2.0" || n === "apache") return "apache-2.0";
   if (n === "gpl-3.0" || n === "gpl") return "gpl-3.0";
-  return "mit";
+  throw new Error(`Unknown license: ${name}. Valid: mit | isc | unlicense | apache-2.0 | gpl-3.0`);
 }
 
 async function cmdProtect(config: Config, repos: string[], opts: { license?: string; holder?: string; year?: number }): Promise<void> {
@@ -193,9 +193,16 @@ async function cmdProtect(config: Config, repos: string[], opts: { license?: str
     console.error("Nothing to protect. Pass repos (`rs protect owner/repo`) or --all, and install the Repo Shield app on the repos you want to protect — any repo you can write to: " + INSTALL_URL);
     process.exit(1);
   }
-  const license = parseLicense(opts.license || "mit");
+  const license = (() => {
+    try {
+      return parseLicense(opts.license || "mit");
+    } catch (e: any) {
+      console.error(e.message);
+      process.exit(1);
+    }
+  })();
   const holder = (opts.holder || config.user.name || config.user.login).trim();
-  const year = opts.year || new Date().getFullYear();
+  const year = opts.year && Number.isInteger(opts.year) && opts.year > 0 ? opts.year : new Date().getFullYear();
 
   console.log(`Protecting ${targets.length} repo(s)...`);
   let ok = 0;
@@ -269,13 +276,8 @@ async function main(): Promise<void> {
     return;
   }
   if (cmd === "protect" || cmd === "run") {
-    const all = args.includes("--all");
-    const repos = args.slice(1).filter((a) => !a.startsWith("--"));
-    const opt = (name: string) => {
-      const i = args.indexOf(name);
-      return i >= 0 ? args[i + 1] : undefined;
-    };
-    await cmdProtect(requireAuth(), all ? [] : repos, { license: opt("--license"), holder: opt("--holder"), year: opt("--year") ? Number(opt("--year")) : undefined });
+    const parsed = parseProtectArgs(args.slice(1));
+    await cmdProtect(requireAuth(), parsed.all ? [] : parsed.repos, { license: parsed.license, holder: parsed.holder, year: parsed.year });
     return;
   }
   console.error(`Unknown command: ${cmd}\n`);

@@ -5,15 +5,62 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
-  ci:
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - run: npm ci
-      - run: npm run typecheck --if-present
-      - run: npm run test --if-present
-      - run: npm run build --if-present
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Tests (pack + license + CLI protect-flow)
+        run: npm test
+      - name: Build site
+        run: npm run build
+      - name: Gate — tokens valid + aliases resolve
+        run: python3 scripts/validate_tokens.py
+      - name: Gate — token pairs pass WCAG (light + dark)
+        run: python3 scripts/validate_contrast.py
+      - name: Gate — component specs complete
+        run: python3 scripts/validate_component_spec.py
+      - name: Gate — no emoji in UI, taste docs, or instruction surface
+        run: python3 scripts/check_no_emoji.py
+
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: browser-actions/setup-chrome@v2
+        id: setup-chrome
+      - run: npm ci
+      - run: npm run build
+      - name: Gate — real-render contrast + overflow (6 routes, Chrome)
+        shell: bash
+        run: |
+          npm run preview > /tmp/preview.log 2>&1 &
+          PID=$!
+          trap 'kill $PID 2>/dev/null || true' EXIT
+          code="000"
+          for i in $(seq 1 30); do
+            code="$(curl -s -o /dev/null -w '%{http_code}' http://localhost:5178/repo-shield/ || true)"
+            [ "$code" = "200" ] && break
+            sleep 1
+          done
+          if [ "$code" != "200" ]; then
+            echo "::error::vite preview never came up on :5178 (last code $code)"
+            cat /tmp/preview.log
+            exit 1
+          fi
+          export CHROME_PATH="${{ steps.setup-chrome.outputs.chrome-path }}"
+          BASE="http://localhost:5178/repo-shield/#/" node .impeccable/repo-shield-verify.mjs all
