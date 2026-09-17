@@ -37,10 +37,13 @@ jobs:
         run: npm run build
 
       - name: Require npm publish token
-        if: ${{ secrets.NPM_TOKEN == '' }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "::error::NPM_TOKEN secret is not set. Add it under Settings > Secrets and variables > Actions (an npm token with publish rights for @reposell/repo-shield), then push a new v* tag."
-          exit 1
+          test -n "${NPM_TOKEN}" || {
+            echo "::error::NPM_TOKEN secret is not set. Add it under Settings > Secrets and variables > Actions (an npm token with publish rights for @reposell/repo-shield), then push a new v* tag."
+            exit 1
+          }
 
       - name: Publish to npm
         working-directory: cli
