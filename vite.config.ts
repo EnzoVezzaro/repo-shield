@@ -1,5 +1,5 @@
 export default {
-  base: "/repo-shield/",
+  base: "/",
   server: {
     port: 5174,
   },

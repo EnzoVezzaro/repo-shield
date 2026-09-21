@@ -4,6 +4,24 @@ All notable changes to Repo Shield (web site, CLI, Agent Skill) are documented
 here. Versions track the npm package `@reposell/repo-shield`; the same commits
 ship the site and the skill.
 
+## [Unreleased]
+
+### Fixed
+
+- The site is no longer blank at https://reposhield.reposell.dev/. The Vite
+  `base` was still set to `/repo-shield/` (the old GitHub Pages project-page
+  path), so the built `index.html` requested `/repo-shield/assets/*.js` while
+  the custom domain serves assets at the root — the bundle 404'd and React
+  never mounted. `base` is now `/`, matching the custom-domain deployment.
+- `robots.txt` now declares the sitemap with an absolute URL
+  (`https://reposhield.reposell.dev/sitemap.xml`) per the robots exclusion
+  protocol; relative `Sitemap:` paths are ignored by crawlers.
+- `sitemap.xml` now uses absolute `<loc>` URLs per the sitemap protocol
+  (previously relative, which is invalid), and no longer lists
+  `privacy.html`, `terms.html`, and `pricing.html` — static pages that were
+  never built. The live routes are the hash routes (`/#/privacy`, `/#/terms`,
+  `/#/pricing`), which are now listed instead.
+
 ## [0.1.6] - 2026-09-17
 
 ### Fixed

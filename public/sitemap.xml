@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>/</loc></url>
-  <url><loc>/#/generate</loc></url>
-  <url><loc>/#/support</loc></url>
-  <url><loc>/#/faq</loc></url>
-  <url><loc>/#/privacy</loc></url>
-  <url><loc>/#/terms</loc></url>
-  <url><loc>/privacy.html</loc></url>
-  <url><loc>/terms.html</loc></url>
-  <url><loc>/pricing.html</loc></url>
+  <url><loc>https://reposhield.reposell.dev/</loc></url>
+  <url><loc>https://reposhield.reposell.dev/#/generate</loc></url>
+  <url><loc>https://reposhield.reposell.dev/#/support</loc></url>
+  <url><loc>https://reposhield.reposell.dev/#/faq</loc></url>
+  <url><loc>https://reposhield.reposell.dev/#/privacy</loc></url>
+  <url><loc>https://reposhield.reposell.dev/#/terms</loc></url>
+  <url><loc>https://reposhield.reposell.dev/#/pricing</loc></url>
 </urlset>
