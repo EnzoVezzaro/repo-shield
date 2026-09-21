@@ -35,9 +35,9 @@ ship the site and the skill.
   back to MIT, so a typo'd license can never fling a repo into the wrong license.
 - Invalid `--year` values (`0`, negative, or non-numeric) now fall back to the
   current year instead of writing a broken copyright line.
-- The npm release workflow authenticates `npm publish --provenance` with the
-  `NPM_TOKEN` secret (it previously failed with `ENEEDAUTH`) and fails with a
-  clear message when that secret is missing.
+- The npm release workflow publishes with trusted publishing (OIDC,
+  `id-token: write`) — no token secret required — and documents the one-time
+  npm-side setup. It previously failed with `ENEEDAUTH`.
 - CI now runs the full documented quality-gate suite: a `quality` job
   (typecheck, tests, build, `validate_tokens`, `validate_contrast`,
   `validate_component_spec`, `check_no_emoji`) and a `render` job that drives the

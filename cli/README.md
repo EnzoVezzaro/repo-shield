@@ -259,10 +259,11 @@ Quality gates, all run in CI on every push/PR
 ### Releasing the CLI
 
 The npm package (`@reposell/repo-shield`) auto-publishes from GitHub Actions
-when a `v*` tag is pushed. The repo needs an `NPM_TOKEN` secret (an npm token
-with publish rights) under Settings > Secrets and variables > Actions; for
-provenance on a first-ever publish, the repo must also be connected as a
-trusted publisher in npm settings:
+when a `v*` tag is pushed, using trusted publishing (OIDC) — no token needed
+locally. Connect the package to this repo once in npm settings: package >
+Settings > Set up trusted publishing, GitHub, owner `EnzoVezzaro`, repo
+`repo-shield`, workflow filename `release.yml`, allowed action `npm publish`
+(the workflow already carries `id-token: write`).
 
 ```bash
 # bump cli/package.json first (tag must match the version exactly)
